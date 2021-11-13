@@ -1,0 +1,87 @@
+{
+  "name": "@levellr/crossgram",
+  "version": "0.1.0",
+  "author": "Ben Barbersmith <ben@barbersmith.com>",
+  "description": "Repost Tweets to Telegram automatically",
+  "scripts": {
+    "format": "prettier --write \"src/**/*.ts\" \"bin/**/*.ts\"",
+    "lint": "eslint \"{src,bin,lib,test}/**/*.ts\" --fix --resolve-plugins-relative-to .",
+    "prepare": "husky install",
+    "release": "standard-version",
+    "start": "npx ts-node bin/stream.ts",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/levellr/crossgram.git"
+  },
+  "keywords": [
+    "telegram",
+    "twitter",
+    "bot",
+    "repost"
+  ],
+  "bugs": {
+    "url": "https://github.com/levellr/crossgram/issues"
+  },
+  "homepage": "https://github.com/levellr/crossgram#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "node-fetch": "^2.6.6",
+    "telegraf": "^4.4.2",
+    "twitter-api-v2": "^1.6.5"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^14.1.0",
+    "@commitlint/config-conventional": "^14.1.0",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^16.7.1",
+    "@types/node-fetch": "^2.5.12",
+    "@typescript-eslint/eslint-plugin": "^4.28.2",
+    "@typescript-eslint/parser": "^4.28.2",
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
+    "husky": "^7.0.1",
+    "jest": "27.0.6",
+    "lint-staged": "^11.1.2",
+    "prettier": "^2.3.2",
+    "standard-version": "^9.3.2",
+    "ts-jest": "^27.0.3",
+    "ts-loader": "^9.2.3",
+    "ts-node": "^10.0.0",
+    "tsconfig-paths": "^3.10.1",
+    "typescript": "^4.3.5"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "coverageReporters": [
+      "json",
+      "html"
+    ],
+    "maxWorkers": 2,
+    "testEnvironment": "node"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "prettier --write",
+      "eslint --cache --fix"
+    ]
+  }
+}
