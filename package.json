@@ -4,8 +4,7 @@
   "author": "Ben Barbersmith <ben@barbersmith.com>",
   "description": "Repost Tweets to Telegram automatically",
   "license": "agpl-3.0",
-  "main": "./dist/cjs/src/streamer.js",
-  "module": "./dist/esm/src/streamer.js",
+  "main": "./dist/src/streamer.js",
   "files": [
     "dist/"
   ],
@@ -16,7 +15,7 @@
     "prepublishOnly": "npm run tsc",
     "release": "standard-version",
     "start": "npx ts-node bin/stream.ts",
-    "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "tsc": "tsc -p tsconfig.json",
     "test": "jest"
   },
   "repository": {
