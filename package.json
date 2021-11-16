@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "author": "Ben Barbersmith <ben@barbersmith.com>",
   "description": "Repost Tweets to Telegram automatically",
+  "license": "agpl-3.0",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\" \"bin/**/*.ts\"",
     "lint": "eslint \"{src,bin,lib,test}/**/*.ts\" --fix --resolve-plugins-relative-to .",
