@@ -37,11 +37,14 @@ export class TwitterStreamer {
     stream.on(ETwitterStreamEvent.Data, this.processStreamEvent);
   }
 
-  async registerStream(
-    twitterUsername: string,
-    telegramBotToken: string,
-    telegramChatId: string | number,
-  ): Promise<void> {
+  async registerStream(params: {
+    twitterUsername: string;
+    telegramBotToken: string;
+    telegramChatId: string | number;
+  }): Promise<void> {
+    const { twitterUsername, telegramBotToken } = params;
+    let { telegramChatId } = params;
+
     // Convert Telegram chat ID to numeric ID if necessary
     if (typeof telegramChatId === 'string') {
       const numericTelegramChatId = parseInt(telegramChatId);
@@ -84,7 +87,8 @@ export class TwitterStreamer {
     return;
   }
 
-  unregisterStream(username: string, chatId: number) {
+  unregisterStream(params: { username: string; chatId: number }) {
+    const { username, chatId } = params;
     const userId = this.userIdsByUsername.get(username);
 
     // No known user ID for this username? Nothing to unregister.
@@ -104,7 +108,7 @@ export class TwitterStreamer {
     return;
   }
 
-  async updateStreamRules(twitterUsername: string): Promise<void> {
+  private async updateStreamRules(twitterUsername: string): Promise<void> {
     const rule = this.rules?.find((rule) => rule.tag === twitterUsername);
 
     if (!rule) {
@@ -124,7 +128,7 @@ export class TwitterStreamer {
     return;
   }
 
-  processStreamEvent = async (
+  private processStreamEvent = async (
     result: TweetV2SingleStreamResult,
   ): Promise<void> => {
     // If there's no tweet author user ID, it's not a relevant tweet

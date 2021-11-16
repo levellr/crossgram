@@ -33,11 +33,11 @@ async function startStreamer() {
       console.log(
         `Registering stream to repost tweets from @${TWITTER_USERNAMES[i]} to Telegram chat ID ${TELEGRAM_CHAT_IDS[i]} via Telegram bot ${TELEGRAM_BOT_TOKENS[i]}`,
       );
-      await streamer.registerStream(
-        TWITTER_USERNAMES[i],
-        TELEGRAM_BOT_TOKENS[i],
-        TELEGRAM_CHAT_IDS[i],
-      );
+      await streamer.registerStream({
+        twitterUsername: TWITTER_USERNAMES[i],
+        telegramBotToken: TELEGRAM_BOT_TOKENS[i],
+        telegramChatId: TELEGRAM_CHAT_IDS[i],
+      });
     } catch (err) {
       console.log(err);
     }
