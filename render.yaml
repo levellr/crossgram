@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: crossgram
+    env: node
+    repo: https://github.com/levellr/crossgram.git
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run start
+    envVars:
+      - key: TELEGRAM_BOT_TOKENS
+        sync: false
+      - key: TELEGRAM_CHAT_IDS
+        sync: false
+      - key: TWITTER_USERNAMES
+        sync: false
+      - key: TWITTER_CONSUMER_KEY
+        sync: false
+      - key: TWITTER_CONSUMER_SECRET
+        sync: false
