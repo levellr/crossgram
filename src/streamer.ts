@@ -28,7 +28,7 @@ export class TwitterStreamer {
     this.dispatchers = new Map<string, TweetDispatcher>();
 
     stream.autoReconnect = true;
-    stream.on(ETwitterStreamEvent.ConnectionError, (err) => {
+    stream.on(ETwitterStreamEvent.ConnectionError, (err: Error) => {
       console.log('Connection error', err);
     });
     stream.on(ETwitterStreamEvent.ConnectionClosed, () => {
@@ -109,7 +109,9 @@ export class TwitterStreamer {
   }
 
   private async updateStreamRules(twitterUsername: string): Promise<void> {
-    const rule = this.rules?.find((rule) => rule.tag === twitterUsername);
+    const rule = this.rules?.find(
+      (rule: StreamingV2Rule) => rule.tag === twitterUsername,
+    );
 
     if (!rule) {
       // Update Twitter stream rules to monitor for this user
