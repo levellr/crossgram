@@ -8,11 +8,13 @@ Repost Tweets to Telegram automatically. Built by [Levellr](https://www.levellr.
 
 Crossgram is a TypeScript library and web service you can use to automatically repost Tweets to Telegram chats, groups, supergroups or channels using a Telegram Bot.
 
+You can:
+
 - Follow one Twitter account or many
 - Reposts tweets into one Telegram chat or many
 - Use a single Telegram bot, or use a different bot for each chat
 
-A single Crossgram instance even can be used to stream Tweets from multiple accounts to multiple Telegram chats using multiple Telegram bots. For example, with a single instance you can repost:
+A single Crossgram instance even can be used to stream Tweets from multiple accounts to multiple Telegram chats using multiple Telegram bots. For example, one Crossgram instance can repost:
 
 - Tweets from [@city_xtra](https://twitter.com/city_xtra) to the [Manchester City - City Xtra](https://t.me/mancityxtra) supergroup via the "City Xtra on Twitter" bot
 - Tweets from [@theanfieldwrap](https://twitter.com/theanfieldwrap) to the [Liverpool Football Club - The Anfield Wrap](https://t.me/liverpoolfctaw) supergroup via the "The Anfield Wrap on Twitter" bot
@@ -20,7 +22,17 @@ A single Crossgram instance even can be used to stream Tweets from multiple acco
 
 Twitter shortlinks are automatically expanded — no more mysterious 't.co' links in your chat!
 
-## Requirements
+----
+
+> ## Need a no-code solution? 👷
+>
+> If you don't code and you just want a bot to automatically repost Tweets from Twitter to Telegram for you, we're running a closed beta that can help you out.
+>
+> [Drop us a line and tell us about your Telegram community](info@levellr.com) to find out if you're eligible to join.
+
+----
+
+## Getting started
 
 To get started, you'll need:
 
@@ -56,7 +68,7 @@ Start the script:
   npm run start
 ```
 
-## Deploying Crossgram to the web
+## Deploying Crossgram
 
 Use a platform of your choice, or deploy in one click:
 
@@ -107,8 +119,8 @@ async function main() {
   console.log('Starting Twitter API client');
 
   const streamer = await TwitterStreamer.create({
-    twitterAppKey: TWITTER_CONSUMER_KEY,
-    twitterAppSecret: TWITTER_CONSUMER_SECRET,
+    twitterAppKey: 'TWITTER_CONSUMER_KEY',
+    twitterAppSecret: 'TWITTER_CONSUMER_SECRET',
   });
 
   // Register a stream from Twitter to Telegram
@@ -145,6 +157,11 @@ $ npm run lint
 $ npm run format
 ```
 
+## Contributing
+
+Contributions welcome! Please start with an issue before making a pull request so we can make sure we're all on the same page.
+
+Check out our [contribution guidelines for this project](CONTRIBUTING.md) for more information.
 ## License
 
 Crossgram is open-source under the [GNU Affero General Public License Version 3 (AGPLv3)](https://choosealicense.com/licenses/agpl-3.0/).
