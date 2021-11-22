@@ -1,6 +1,6 @@
 {
   "name": "@levellr/crossgram",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": "Ben Barbersmith <ben@barbersmith.com>",
   "description": "Repost Tweets to Telegram automatically",
   "license": "agpl-3.0",
