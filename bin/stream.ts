@@ -10,6 +10,14 @@ async function startStreamer() {
   const streamer = await TwitterStreamer.create({
     twitterAppKey: TWITTER_CONSUMER_KEY,
     twitterAppSecret: TWITTER_CONSUMER_SECRET,
+    onErrorCallback: (err: Error) => {
+      console.log(`Connection error: ${err}, exiting...`);
+      exit(1);
+    },
+    onConnectionClosedCallback: () => {
+      console.log('Connection closed, exiting...');
+      exit(1);
+    },
   });
 
   console.log(
