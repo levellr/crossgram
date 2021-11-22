@@ -10,6 +10,8 @@ import { TweetDispatcher } from './dispatcher';
 export type TwitterStreamParams = {
   twitterAppKey: string;
   twitterAppSecret: string;
+  onErrorCallback?: (err: Error) => void;
+  onConnectionClosedCallback?: () => void;
   resetRules?: boolean;
 };
 
@@ -22,18 +24,24 @@ export class TwitterStreamer {
   constructor(
     private readonly twitter: TwitterApi,
     readonly stream: TweetStream<TweetV2SingleStreamResult>,
+    onErrorCallback?: (err: Error) => void,
+    onConnectionClosedCallback?: () => void,
   ) {
     this.userIdsByUsername = new Map<string, string>();
     this.botsByToken = new Map<string, Telegraf>();
     this.dispatchers = new Map<string, TweetDispatcher>();
 
-    stream.autoReconnect = true;
-    stream.on(ETwitterStreamEvent.ConnectionError, (err: Error) => {
+    onErrorCallback ??= (err: Error) => {
       console.log('Connection error', err);
-    });
-    stream.on(ETwitterStreamEvent.ConnectionClosed, () => {
+    };
+
+    onConnectionClosedCallback ??= () => {
       console.log('Connection has been closed');
-    });
+    };
+
+    stream.autoReconnect = true;
+    stream.on(ETwitterStreamEvent.ConnectionError, onErrorCallback);
+    stream.on(ETwitterStreamEvent.ConnectionClosed, onConnectionClosedCallback);
     stream.on(ETwitterStreamEvent.Data, this.processStreamEvent);
   }
 
@@ -150,7 +158,13 @@ export class TwitterStreamer {
   };
 
   static async create(params: TwitterStreamParams): Promise<TwitterStreamer> {
-    const { twitterAppKey, twitterAppSecret, resetRules } = params;
+    const {
+      twitterAppKey,
+      twitterAppSecret,
+      onErrorCallback,
+      onConnectionClosedCallback,
+      resetRules,
+    } = params;
 
     const twitterConsumerClient = new TwitterApi({
       appKey: twitterAppKey,
@@ -175,6 +189,11 @@ export class TwitterStreamer {
       'media.fields': ['preview_image_url', 'url', 'alt_text'],
     });
 
-    return new TwitterStreamer(twitter, stream);
+    return new TwitterStreamer(
+      twitter,
+      stream,
+      onErrorCallback,
+      onConnectionClosedCallback,
+    );
   }
 }
