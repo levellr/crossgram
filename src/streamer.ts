@@ -35,11 +35,13 @@ export class TwitterStreamer {
     this.dispatchers = new Map<string, TweetDispatcher>();
 
     const reconnect = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 30000));
       const { twitter, stream } = await this.twitterClientGenerator();
 
       stream.autoReconnect = true;
       stream.on(ETwitterStreamEvent.ConnectionError, (err: Error) => {
-        console.log('Connection error, reconnecting', err);
+        console.log(err);
+        console.log('Connection error, reconnecting');
         return reconnect();
       });
       stream.on(ETwitterStreamEvent.ConnectionClosed, () => {
@@ -57,7 +59,8 @@ export class TwitterStreamer {
     ) => {
       stream.autoReconnect = true;
       stream.on(ETwitterStreamEvent.ConnectionError, (err: Error) => {
-        console.log('Connection error, reconnecting', err);
+        console.log(err);
+        console.log('Connection error, reconnecting');
         return reconnect();
       });
       stream.on(ETwitterStreamEvent.ConnectionClosed, () => {
