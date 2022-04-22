@@ -65,10 +65,22 @@ Install dependencies:
 Start the script:
 
 ```bash
-  npm run start
+  npm run dev
 ```
 
 ## Deploying Crossgram
+
+Build the app:
+
+```bash
+  npm run build
+```
+
+Start the production build:
+
+```bash
+  npm run start
+```
 
 Use a platform of your choice, or deploy in one click:
 
@@ -119,8 +131,8 @@ async function main() {
   console.log('Starting Twitter API client');
 
   const streamer = await TwitterStreamer.create({
-    twitterAppKey: 'TWITTER_CONSUMER_KEY',
-    twitterAppSecret: 'TWITTER_CONSUMER_SECRET',
+    appKey: 'TWITTER_CONSUMER_KEY',
+    appSecret: 'TWITTER_CONSUMER_SECRET',
   });
 
   // Register a stream from Twitter to Telegram
