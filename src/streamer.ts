@@ -6,10 +6,11 @@ import TwitterApi, {
 } from 'twitter-api-v2';
 import { Telegraf } from 'telegraf';
 import { TweetDispatcher } from './dispatcher';
+import { exit } from 'process';
 
 export type TwitterStreamParams = {
-  twitterAppKey: string;
-  twitterAppSecret: string;
+  appKey: string;
+  appSecret: string;
   resetRules?: boolean;
 };
 
@@ -26,51 +27,26 @@ export class TwitterStreamer {
   private rules?: StreamingV2Rule[];
 
   constructor(
-    private readonly twitterClientGenerator: TwitterConnectionFactory,
     private twitter: TwitterApi,
     stream: TweetStream<TweetV2SingleStreamResult>,
   ) {
     this.userIdsByUsername = new Map<string, string>();
     this.botsByToken = new Map<string, Telegraf>();
     this.dispatchers = new Map<string, TweetDispatcher>();
+    this.twitter = twitter;
 
-    const reconnect = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 30000));
-      const { twitter, stream } = await this.twitterClientGenerator();
-
-      stream.autoReconnect = true;
-      stream.on(ETwitterStreamEvent.ConnectionError, (err: Error) => {
-        console.log(err);
-        console.log('Connection error, reconnecting');
-        return reconnect();
-      });
-      stream.on(ETwitterStreamEvent.ConnectionClosed, () => {
-        console.log('Connection has been closed, reconnecting');
-        return reconnect();
-      });
-      stream.on(ETwitterStreamEvent.Data, this.processStreamEvent);
-
-      this.twitter = twitter;
-      attachListenersToStream(stream);
-    };
-
-    const attachListenersToStream = (
-      stream: TweetStream<TweetV2SingleStreamResult>,
-    ) => {
-      stream.autoReconnect = true;
-      stream.on(ETwitterStreamEvent.ConnectionError, (err: Error) => {
-        console.log(err);
-        console.log('Connection error, reconnecting');
-        return reconnect();
-      });
-      stream.on(ETwitterStreamEvent.ConnectionClosed, () => {
-        console.log('Connection has been closed, reconnecting');
-        return reconnect();
-      });
-      stream.on(ETwitterStreamEvent.Data, this.processStreamEvent);
-    };
-
-    attachListenersToStream(stream);
+    stream.autoReconnect = true;
+    stream.on(ETwitterStreamEvent.Data, this.processStreamEvent);
+    stream.on(ETwitterStreamEvent.ConnectionError, (err: Error) => {
+      console.log(err);
+      console.log('Connection error, exiting');
+      exit(1);
+    });
+    stream.on(ETwitterStreamEvent.ConnectionClosed, () => {
+      console.log('Connection has been closed, exiting');
+      exit(1);
+    });
+    stream.on(ETwitterStreamEvent.Data, this.processStreamEvent);
   }
 
   async registerStream(params: {
@@ -185,49 +161,27 @@ export class TwitterStreamer {
     return dispatcher.dispatch(result);
   };
 
-  static createTwitterConnectionFactory(params: {
-    appKey: string;
-    appSecret: string;
-    resetRules?: boolean;
-  }): TwitterConnectionFactory {
-    const { resetRules = false, ...auth } = params;
-
-    return async () => {
-      const twitterConsumerClient = new TwitterApi(auth);
-      const twitter = await twitterConsumerClient.appLogin();
-
-      if (resetRules) {
-        const rules = await twitter.v2.streamRules();
-        await twitter.v2.updateStreamRules({
-          delete: { ids: rules.data.map((rule) => rule.id) },
-        });
-      }
-
-      const stream = await twitter.v2.searchStream({
-        expansions: [
-          'author_id',
-          'attachments.media_keys',
-          'attachments.poll_ids',
-        ],
-        'media.fields': ['preview_image_url', 'url', 'alt_text'],
-      });
-
-      return { twitter, stream };
-    };
-  }
-
   static async create(params: TwitterStreamParams): Promise<TwitterStreamer> {
-    const { twitterAppKey, twitterAppSecret, resetRules } = params;
+    const { resetRules, ...auth } = params;
+    const twitterConsumerClient = new TwitterApi(auth);
+    const twitter = await twitterConsumerClient.appLogin();
 
-    const twitterConnectionGenerator =
-      TwitterStreamer.createTwitterConnectionFactory({
-        appKey: twitterAppKey,
-        appSecret: twitterAppSecret,
-        resetRules,
+    if (resetRules) {
+      const rules = await twitter.v2.streamRules();
+      await twitter.v2.updateStreamRules({
+        delete: { ids: rules.data.map((rule) => rule.id) },
       });
+    }
 
-    const { twitter, stream } = await twitterConnectionGenerator();
+    const stream = await twitter.v2.searchStream({
+      expansions: [
+        'author_id',
+        'attachments.media_keys',
+        'attachments.poll_ids',
+      ],
+      'media.fields': ['preview_image_url', 'url', 'alt_text'],
+    });
 
-    return new TwitterStreamer(twitterConnectionGenerator, twitter, stream);
+    return new TwitterStreamer(twitter, stream);
   }
 }

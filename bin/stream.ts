@@ -8,8 +8,8 @@ async function startStreamer() {
   console.log('Starting Twitter API client');
 
   const streamer = await TwitterStreamer.create({
-    twitterAppKey: TWITTER_CONSUMER_KEY,
-    twitterAppSecret: TWITTER_CONSUMER_SECRET,
+    appKey: TWITTER_CONSUMER_KEY,
+    appSecret: TWITTER_CONSUMER_SECRET,
   });
 
   console.log(
