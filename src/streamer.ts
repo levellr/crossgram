@@ -46,7 +46,6 @@ export class TwitterStreamer {
       console.log('Connection has been closed, exiting');
       exit(1);
     });
-    stream.on(ETwitterStreamEvent.Data, this.processStreamEvent);
   }
 
   async registerStream(params: {
